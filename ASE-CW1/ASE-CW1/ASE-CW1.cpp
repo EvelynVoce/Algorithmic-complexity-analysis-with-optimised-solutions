@@ -26,14 +26,13 @@ std::unordered_map<std::string, std::string> get_all_bricks()
 int main()
 {
     std::unordered_map<std::string, std::string> brick_names = get_all_bricks();
+
     auto const start_point = brick_names.begin();
     std::list<std::string> result = { start_point->first, start_point->second};
 
-    bool done = false;
-    while (!done) {
+    while (brick_names.find(result.back()) != brick_names.end()) {
         std::unordered_map<std::string, std::string>::const_iterator found_at = brick_names.find(result.back());
-        if (found_at == brick_names.end()) done = true;
-        else result.push_back(found_at->second);
+        result.push_back(found_at->second);
     }
 
     for (auto const& answers : result) {
