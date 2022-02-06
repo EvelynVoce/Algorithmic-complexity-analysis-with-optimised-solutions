@@ -34,3 +34,11 @@
 # Folders
 *.vs/
 *x64/
+
+# Extensions
+*.pdb
+*.idb
+*.tlog
+*.log
+*.db
+*.suo

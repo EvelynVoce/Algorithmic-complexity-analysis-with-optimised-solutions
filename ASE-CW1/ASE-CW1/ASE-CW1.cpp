@@ -13,17 +13,18 @@ int main()
 
     if (!infile.good()) std::cout << "File not found" << std::endl;
     else {
+        std::unordered_map<std::string, std::string> brick_names;
         std::string line;
         while (std::getline(infile, line)) {
-
-            // std::unordered_map<std::string, std::string> example = { {,'a'},{2,'b'}};
-
-            const int pos = line.find(",");
+            const size_t pos = line.find(",");
             const std::string side1 = line.substr(0, pos);
             const std::string side2 = line.substr(pos+1);
-            std::cout << side1 << " " << side2 << std::endl;
+            brick_names.insert({side1, side2});
         }
         infile.close();
+        for (auto const& pair : brick_names) {
+            std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+        }
     }
 
 }
