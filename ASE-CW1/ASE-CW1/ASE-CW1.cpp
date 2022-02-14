@@ -7,11 +7,17 @@ struct brick_names_struct {
     std::unordered_map<std::string, std::string> reverse_order;
 };
 
-brick_names_struct get_all_bricks()
+struct test_data {
+    std::string label;
+    std::string path;
+};
+
+brick_names_struct get_all_bricks(std::string path)
 {
+    path.erase(std::remove_if(path.begin(), path.end(), ::isspace), path.end());
     brick_names_struct brick_names;
-    std::ifstream infile("Great_Wall_Problem-test_data//20//input-pairs-20.txt");
-    if (!infile.good()) throw "Error: File not found";
+    std::ifstream infile(path);
+    if (!infile.good()) throw std::invalid_argument("Error: File not found");
     std::string line;
     while (std::getline(infile, line)) {
         const size_t pos = line.find(",");
@@ -40,21 +46,52 @@ void update_eastern_wall(const std::unordered_map<std::string, std::string> bric
     }
 }
 
-int main()
-{
-    const brick_names_struct brick_names = get_all_bricks();
-
+std::list<std::string> get_results(std::string path) {
+    const brick_names_struct brick_names = get_all_bricks(path);
     const std::unordered_map<std::string, std::string>::const_iterator start_point = brick_names.inorder.begin();
-    std::list<std::string> result = { start_point->first, start_point->second};
+    std::list<std::string> result = { start_point->first, start_point->second };
 
-    update_eastern_wall(brick_names.inorder, result);
     update_western_wall(brick_names.reverse_order, result);
-    
-    std::cout << "Done\n" << std::endl;
+    update_eastern_wall(brick_names.inorder, result);
+    return result;
+}
+
+
+void show_results(std::list<std::string>& result) {
     for (std::string const& answers : result) {
         std::cout << answers << std::endl;
     }
 }
+
+std::list<test_data> get_test_data() {
+    std::ifstream infile("Great_Wall_Problem-test_data\\paths.txt");
+    if (!infile.good()) throw std::invalid_argument("Error: File not found");
+    std::list<test_data> paths = {};
+    std::string line;
+    while (std::getline(infile, line)) {
+        const size_t pos = line.find(",");
+        const std::string label = line.substr(0, pos);
+        const std::string path_found = line.substr(pos + 1);
+        test_data test_instance = { label, path_found };
+        paths.push_back(test_instance);
+    }
+    infile.close();
+    return paths;
+}
+
+int main()
+{
+    std::list<test_data> paths = get_test_data();
+    for (test_data x : paths) {
+        auto start = std::chrono::high_resolution_clock::now();
+        std::list<std::string> result = get_results(x.path);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+        std::cout << x.label << "\t" << duration.count() << std::endl;
+    }
+    
+}
+
 
 
 /* // Test to see if the need for reversed unordered map could be removed efficiently
