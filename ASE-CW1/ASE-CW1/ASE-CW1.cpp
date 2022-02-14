@@ -86,25 +86,8 @@ int main()
         auto start = std::chrono::high_resolution_clock::now();
         std::list<std::string> result = get_results(x.path);
         auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         std::cout << x.label << "\t" << duration.count() << std::endl;
     }
     
 }
-
-
-
-/* // Test to see if the need for reversed unordered map could be removed efficiently
-void update_western_wall(const std::unordered_map<std::string, std::string> brick_names, std::list<std::string>& result)
-{
-    bool keep_going = true;
-    while (keep_going) {
-        keep_going = false;
-        for (auto found_at = brick_names.begin(); found_at != brick_names.end(); ++found_at) {
-            if (found_at->second == result.front()) {
-                result.push_front(found_at->first);
-                keep_going = true;
-            }
-        }
-    }
-} */

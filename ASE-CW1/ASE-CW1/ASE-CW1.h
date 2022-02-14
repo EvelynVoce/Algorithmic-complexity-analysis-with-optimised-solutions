@@ -5,6 +5,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <chrono>
+#include <list>
 
 struct brick_names_struct;
 brick_names_struct get_all_bricks(std::string);
