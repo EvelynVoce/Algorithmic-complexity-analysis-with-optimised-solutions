@@ -79,6 +79,12 @@ std::list<test_data> get_test_data() {
     return paths;
 }
 
+/*
+int main(std::string argc, char** argv) {
+    std::list<std::string> result = get_results(argc);
+    show_results(result);
+}*/
+
 int main()
 {
     std::list<test_data> paths = get_test_data();

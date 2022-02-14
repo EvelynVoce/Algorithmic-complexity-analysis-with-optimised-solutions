@@ -86,7 +86,7 @@ int main()
         auto start = std::chrono::high_resolution_clock::now();
         std::list<std::string> result = get_results(x.path);
         auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
         std::cout << x.label << "\t" << duration.count() << std::endl;
     }
 
