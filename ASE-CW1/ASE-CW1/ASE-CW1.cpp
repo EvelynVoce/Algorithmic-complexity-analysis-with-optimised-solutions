@@ -15,7 +15,7 @@ struct test_data {
 brick_names_struct get_all_bricks(std::string path)
 {
     path.erase(std::remove_if(path.begin(), path.end(), ::isspace), path.end());
-    brick_names_struct brick_names;
+    brick_names_struct brick_names; 
     std::ifstream infile(path);
     if (!infile.good()) throw std::invalid_argument("Error: File not found");
     std::string line;
@@ -79,12 +79,13 @@ std::list<test_data> get_test_data() {
     return paths;
 }
 
-/*
-int main(std::string argc, char** argv) {
-    std::list<std::string> result = get_results(argc);
-    show_results(result);
-}*/
+// Main for running algorithm
+//int main(std::string argc, char** argv) {
+//    std::list<std::string> result = get_results(argc);
+//    show_results(result);
+//}
 
+// Main for running all tests and timing execution
 int main()
 {
     std::list<test_data> paths = get_test_data();
@@ -94,6 +95,5 @@ int main()
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         std::cout << x.label << "\t" << duration.count() << std::endl;
-    }
-    
+    }    
 }

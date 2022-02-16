@@ -33,9 +33,11 @@ def combined():
     plt.title("The relationship between run-time and the number of bricks")
     plt.xlabel("Number of bricks")
     plt.ylabel("Run-time (milliseconds)")
-    plt.plot(b, y1, color='red')
-    plt.plot(b, y2, color='blue')
-    # plt.yscale('log')
+    plt.plot(b, y1, color='red', label='Solution A')
+    plt.plot(b, y2, color='blue', label='Solution B')
+
+    plt.legend()
+    plt.xscale('log')
     plt.show()
 
 
