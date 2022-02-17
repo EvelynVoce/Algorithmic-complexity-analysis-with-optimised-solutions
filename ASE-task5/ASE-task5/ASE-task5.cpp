@@ -1,18 +1,12 @@
 #include <iostream>
-#include <map>
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <vector>
 #include <list>
 
 struct brick_names_struct {
-    // std::vector<std::pair<std::string, std::string>> a;
-    // std::vector<std::pair<std::string, std::string>> b;
     std::list<std::pair<std::string, std::string>> a;
     std::list<std::pair<std::string, std::string>> b;
-
-    
 };
 
 bool sortbysec(const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b) {
@@ -81,10 +75,6 @@ int main()
         // step 1
         bricks.a = c;
         bricks.b = c;
-        std::list<std::pair<std::string, std::string>>::iterator end_b = bricks.b.end();
-        std::advance(end_b, -1);
-        std::list<std::pair<std::string, int>>::iterator end_p = p.end();
-        std::advance(end_p, -1);
         n = int(bricks.a.size());
 
 
@@ -98,7 +88,15 @@ int main()
         // step 4
         a_point = bricks.a.begin();
         b_point = bricks.b.begin();
-        p_point = p.begin();
+        //p_point = p.begin();
+
+        std::cout << bricks.b.size() << std::endl;
+        
+        std::list<std::pair<std::string, std::string>>::iterator end_b = bricks.b.end();
+        std::advance(end_b, -1);
+       
+        std::list<std::pair<std::string, int>>::iterator end_p = p.end();
+        std::advance(end_p, -1);
         
         while (a_point != bricks.a.end()) {
             if (a_point->second == b_point->first) {
@@ -116,6 +114,7 @@ int main()
             else if (a_point->second > p_point->first) {
                 std::cout << "3" << std::endl;
                 if (p_point != end_p) std::advance(p_point, 1);
+
             }
 
             else if (a_point->second > b_point->first) {
@@ -123,14 +122,13 @@ int main()
                 if (b_point != end_b) std::advance(b_point, 1);
             }
         }
+
+        std::cout << "hey";
         // step 5
         f.sort();
 
         // step 6
-        while (f_point != f.end()) {
-            p.push_back({ f_point->first, f_point->second });
-            std::advance(f_point, 1);
-        }
+        p.merge(f);
         p.sort();
 
         // step 7
@@ -144,8 +142,7 @@ int main()
 
     p_point = p.begin();
     while (p_point != p.end()) {
-        std::cout << p_point->first << "  " << p_point->second << std::endl;
-        p.push_back({ p_point->first, p_point->second });
+        std::cout << p_point->first << std::endl;
         std::advance(p_point, 1);
     }
 }
