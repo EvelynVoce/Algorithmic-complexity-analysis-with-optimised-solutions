@@ -1,0 +1,8 @@
+triangle,circle
+star,cross
+semicircle,diamond
+circle,hexagon
+diamond,ring
+cross,semicircle
+hexagon,star
+square,triangle

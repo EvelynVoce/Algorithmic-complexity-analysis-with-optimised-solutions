@@ -1,20 +1,113 @@
-// AmortizedTesting.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// ASE-CW1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <unordered_map>
+#include <chrono>
+#include <list>
+#include <algorithm>
 
-int main()
+struct brick_names_struct {
+    std::list<std::pair<std::string, std::string>> inorder;
+    std::list<std::pair<std::string, std::string>> reverse_order;
+};
+
+struct test_data {
+    std::string label;
+    std::string path;
+};
+
+brick_names_struct get_all_bricks(std::string path)
 {
-    std::cout << "Hello World!\n";
+    path.erase(std::remove_if(path.begin(), path.end(), ::isspace), path.end());
+    brick_names_struct brick_names;
+    std::ifstream infile(path);
+    if (!infile.good()) throw std::invalid_argument("Error: File not found");
+    std::string line;
+    while (std::getline(infile, line)) {
+        const size_t pos = line.find(",");
+        const std::string side1 = line.substr(0, pos);
+        const std::string side2 = line.substr(pos + 1);
+        brick_names.inorder.push_back({ side1, side2 });
+        brick_names.reverse_order.push_back({ side2, side1 });
+    }
+    infile.close();
+    brick_names.inorder.sort();
+    brick_names.reverse_order.sort();
+    return brick_names;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void update_western_wall(const std::list<std::pair<std::string, std::string>> brick_names, std::list<std::string>& result)
+{
+    while (brick_names.find(result.front()) != brick_names.end()) {
+        const std::unordered_map<std::string, std::string>::const_iterator found_at = brick_names.find(result.front());
+        result.push_front(found_at->second);
+    }
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+void update_eastern_wall(const std::list<std::pair<std::string, std::string>> brick_names, std::list<std::string>& result)
+{
+    while (result.size() != brick_names.size()) {
+        const std::string item_to_find;
+        if (auto i = std::lower_bound(brick_names.begin(), brick_names.end(), item_to_find); i != brick_names.end() && *i->first != item_to_find) {
+            // In this branch i is an iterator.
+        }
+
+        const std::string found_item = std::binary_search(brick_names.begin(), brick_names.end(), result.back());
+        const std::unordered_map<std::string, std::string>::const_iterator found_at = brick_names.find(result.back());
+        result.push_back(found_at->second);
+    }
+}
+
+std::list<std::string> get_results(std::string path) {
+    brick_names_struct brick_names = get_all_bricks(path);
+    std::list<std::pair<std::string, std::string>>::iterator start = brick_names.inorder.begin();
+    std::list<std::string> result = { start->first, start->second};
+
+    update_western_wall(brick_names.reverse_order, result);
+    update_eastern_wall(brick_names.inorder, result);
+    return result;
+}
+
+
+void show_results(std::list<std::string>& result) {
+    for (std::string const& answers : result) {
+        std::cout << answers << std::endl;
+    }
+}
+
+std::list<test_data> get_test_data() {
+    std::ifstream infile("Great_Wall_Problem-test_data\\paths.txt");
+    if (!infile.good()) throw std::invalid_argument("Error: File not found");
+    std::list<test_data> paths = {};
+    std::string line;
+    while (std::getline(infile, line)) {
+        const size_t pos = line.find(",");
+        const std::string label = line.substr(0, pos);
+        const std::string path_found = line.substr(pos + 1);
+        test_data test_instance = { label, path_found };
+        paths.push_back(test_instance);
+    }
+    infile.close();
+    return paths;
+}
+
+// Main for running algorithm
+//int main(std::string argc, char** argv) {
+//    std::list<std::string> result = get_results(argc);
+//    show_results(result);
+//}
+
+// Main for running all tests and timing execution
+int main()
+{
+    std::list<test_data> paths = get_test_data();
+    for (test_data x : paths) {
+        auto start = std::chrono::high_resolution_clock::now();
+        std::list<std::string> result = get_results(x.path);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+        std::cout << x.label << "\t" << duration.count() << std::endl;
+    }
+}
