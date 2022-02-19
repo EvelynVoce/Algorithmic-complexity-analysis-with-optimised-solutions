@@ -36,10 +36,8 @@ brick_names_struct get_all_bricks(std::string path)
     return brick_names;
 }
 
-int main()
-{
-    std::string path = "Great_Wall_Problem-test_data\\NeilExample.txt";
-    path = "Great_Wall_Problem-test_data\\5K\\input-pairs-5K.txt";
+std::list<std::string> get_results(const std::string path) {
+    // std::string path = "Great_Wall_Problem-test_data\\NeilExample.txt";
     brick_names_struct bricks = get_all_bricks(path);
     std::list<std::pair<std::string, std::string>>::iterator a_point = bricks.a.begin();
     std::list<std::pair<std::string, std::string>>::iterator b_point = bricks.b.begin();
@@ -47,7 +45,6 @@ int main()
     std::list<std::pair<std::string, int>> p;
 
     const int n = int(bricks.a.size());
-    std::cout << n << std::endl;
     while (a_point != bricks.a.end()) {
         if (a_point->second == b_point->first) {
             c.push_back({ a_point->first, b_point->second });
@@ -68,14 +65,10 @@ int main()
     std::list<std::pair<std::string, int>>::iterator p_point = p.begin();
     std::list<std::pair<std::string, int>> f;
     std::list<std::pair<std::string, int>>::iterator f_point = f.begin();
-    
-    // for (auto x : p) std::cout << x.first << "\t" << x.second << std::endl;
-    //std::cout << "Next pass\n" << std::endl;
+
     int d = 2;
     while (d < n) {
-        
-        // for (auto passe: p) std::cout << passe.first << "\t" << passe.second << std::endl;
-        
+
         // step 1
         bricks.a = c;
         bricks.b = c;
@@ -92,25 +85,26 @@ int main()
         a_point = bricks.a.begin();
         b_point = bricks.b.begin();
         p_point = p.begin();
-        
+
         std::list<std::pair<std::string, std::string>>::iterator end_a = bricks.a.end();
         std::advance(end_a, -1);
 
         std::list<std::pair<std::string, std::string>>::iterator end_b = bricks.b.end();
         std::advance(end_b, -1);
-       
+
         std::list<std::pair<std::string, int>>::iterator end_p = p.end();
         std::advance(end_p, -1);
-        
+
+        // This is slightly different than instructed. The last two conditions were switched around and the final condition was reused within the second to last condition.
         while (a_point != bricks.a.end()) {
             if (a_point->second == b_point->first) {
-                //std::cout << "1" << std::endl;
+                // std::cout << "1" << std::endl;
                 c.push_back({ a_point->first, b_point->second });
                 std::advance(a_point, 1);
                 if (b_point != end_b) std::advance(b_point, 1);
             }
             else if (a_point->second == (p_point->first)) {
-                //std::cout << "2" << std::endl;
+                // std::cout << "2" << std::endl;
                 f.push_back({ a_point->first, p_point->second - d });
                 std::advance(a_point, 1);
                 if (p_point != end_p) std::advance(p_point, 1);
@@ -118,13 +112,16 @@ int main()
             else if (a_point->second > b_point->first) {
                 // std::cout << "4" << std::endl;
                 if (b_point != end_b) std::advance(b_point, 1);
+                else if (a_point->second > p_point->first) {
+                    // std::cout << "3" << std::endl;
+                    if (p_point != end_p) std::advance(p_point, 1);
+                }
             }
             else if (a_point->second > p_point->first) {
-                //std::cout << "3" << std::endl;
+                // std::cout << "3" << std::endl;
                 if (p_point != end_p) std::advance(p_point, 1);
-
             }
-            
+
         }
 
 
@@ -144,6 +141,7 @@ int main()
 
     p.sort(sortbysecInt);
     std::list<std::string> results;
+
     p_point = p.begin();
     while (p_point != p.end()) {
         results.push_back(p_point->first);
@@ -156,5 +154,23 @@ int main()
         }
         myfile.close();
     }
-    std::cout << "done" << std::endl;
+
+    return results;
+}
+
+// Main for running algorithm
+int main(std::string argc, char** argv) {
+    argc = "Great_Wall_Problem-test_data\\NeilExample.txt";
+    std::list<std::string> results = get_results(argc);
+    const std::string results_file = "results.txt";
+    std::cout << "Writing results to " << results_file << std::endl;
+
+    for (std::string x : results) std::cout << x << std::endl;
+    std::ofstream myfile(results_file);
+    if (myfile.is_open()) {
+        for (auto x : results) {
+            myfile << x << "\n";
+        }
+        myfile.close();
+    }
 }
