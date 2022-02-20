@@ -40,23 +40,21 @@ brick_names_struct get_all_bricks(std::string path)
 
 void update_western_wall(const std::list<std::pair<std::string, std::string>> brick_names, std::list<std::string>& result)
 {
-    while (brick_names.find(result.front()) != brick_names.end()) {
-        const std::unordered_map<std::string, std::string>::const_iterator found_at = brick_names.find(result.front());
-        result.push_front(found_at->second);
+    const std::string item_to_find = result.front();
+    while (result.size() != brick_names.size()) {
+        auto it = std::lower_bound(brick_names.begin(), brick_names.end(), item_to_find);
+        result.push_front(it->second);
     }
+
 }
 
 void update_eastern_wall(const std::list<std::pair<std::string, std::string>> brick_names, std::list<std::string>& result)
 {
+    const std::string item_to_find = result.back();
     while (result.size() != brick_names.size()) {
-        const std::string item_to_find;
-        if (auto i = std::lower_bound(brick_names.begin(), brick_names.end(), item_to_find); i != brick_names.end() && *i->first != item_to_find) {
-            // In this branch i is an iterator.
-        }
-
-        const std::string found_item = std::binary_search(brick_names.begin(), brick_names.end(), result.back());
-        const std::unordered_map<std::string, std::string>::const_iterator found_at = brick_names.find(result.back());
-        result.push_back(found_at->second);
+        int index = std::distance(brick_names.begin(), std::lower_bound(brick_names.begin(), brick_names.end(), std::make_pair(item_to_find, std::numeric_limits<int>::min())) );
+       //  auto it = std::lower_bound(brick_names.begin(), brick_names.end(), item_to_find);
+        result.push_back(it->second);
     }
 }
 
