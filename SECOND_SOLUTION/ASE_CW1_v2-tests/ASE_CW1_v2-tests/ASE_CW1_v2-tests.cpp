@@ -1,10 +1,15 @@
 // ASE-CW1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
-#include "ASE_CW1_v2.h"
+#include "ASE_CW1_v2-tests.h"
 
 struct brick_names_struct {
     std::map<std::string, std::string> inorder;
     std::map<std::string, std::string> reverse_order;
+};
+
+struct test_data {
+    std::string label;
+    std::string path;
 };
 
 brick_names_struct get_all_bricks(std::string path)
@@ -58,7 +63,30 @@ void show_results(std::list<std::string>& result) {
     }
 }
 
-int main(int argc, char* argv[]) {
-    std::list<std::string> result = get_results(argv[1]);
-    show_results(result);
+std::list<test_data> get_test_data() {
+    std::ifstream infile("Great_Wall_Problem-test_data\\paths.txt");
+    if (!infile.good()) throw std::invalid_argument("Error: File not found");
+    std::list<test_data> paths = {};
+    std::string line;
+    while (std::getline(infile, line)) {
+        const size_t pos = line.find(",");
+        const std::string label = line.substr(0, pos);
+        const std::string path_found = line.substr(pos + 1);
+        test_data test_instance = { label, path_found };
+        paths.push_back(test_instance);
+    }
+    infile.close();
+    return paths;
+}
+
+int main()
+{
+    std::list<test_data> paths = get_test_data();
+    for (test_data x : paths) {
+        auto start = std::chrono::high_resolution_clock::now();
+        std::list<std::string> result = get_results(x.path);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        std::cout << x.label << "\t" << duration.count() << std::endl;
+    }
 }

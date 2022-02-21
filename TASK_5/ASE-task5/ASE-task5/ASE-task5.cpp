@@ -154,13 +154,17 @@ std::list<std::string> get_results(const std::string path) {
     return results;
 }
 
-// Main for running algorithm
+
+/* Important notice, only the last 10,000 results get output to the command line, this is not by choice, this is a limitation of visual studios.
+I supsect that when building this project using g++ all results will be printed to the console however, to be safe, I am writing all lines to a text file named results.txt.
+*/
+
 int main(std::string argc, char* argv[]) {
     std::list<std::string> results = get_results(argv[1]);
     const std::string results_file = "results.txt";
     std::cout << "Writing results to " << results_file << std::endl;
 
-    for (std::string x : results) std::cout << x << std::endl;
+    for (std::string result : results) std::cout << result << std::endl;
     std::ofstream myfile(results_file);
     if (myfile.is_open()) {
         for (auto x : results) {

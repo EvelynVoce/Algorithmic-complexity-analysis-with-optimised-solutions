@@ -10,7 +10,6 @@ struct brick_names_struct {
 brick_names_struct get_all_bricks(std::string path)
 {
     path.erase(std::remove_if(path.begin(), path.end(), ::isspace), path.end());
-    std::cout << path << std::endl;
     brick_names_struct brick_names; 
     std::ifstream infile(path);
     if (!infile.good()) throw std::invalid_argument("Error: File not found");
@@ -59,7 +58,6 @@ void show_results(std::list<std::string>& result) {
     }
 }
 
-// Main for running algorithm
 int main(int argc, char* argv[]) {
     std::cout << "start: " << argv[1] << std::endl;
     std::list<std::string> result = get_results(argv[1]);
